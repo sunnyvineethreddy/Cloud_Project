@@ -1,0 +1,56 @@
+<html>
+<head>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+function findCity() {
+var graphicData, webData;
+var text="";
+var zipCode = document.getElementById("zipCode").value;
+$.when(
+    $.getJSON("https://data.kcmo.org/resource/nyg5-tzkz.json", function(data) {
+        graphicData = data;
+	
+    }),
+    $.getJSON("https://data.kcmo.org/resource/rm2v-mbk5.json", function(data) {
+        webData = data;
+		
+    })
+).then(function() {
+	//for crime data
+   for(var i=0;i<1000;i++){
+	if(graphicData[i].location_zip == zipCode){
+		text = text + graphicData[i].location_address + "</br>";
+	}
+	}
+	text= text + "</br>" + "Buildings:" +"</br>"
+	
+	//For Dangerous buildings
+	for(var j=0;j<1000;j++){
+	if(typeof(webData[j].location_zip) == 'undefined')
+		break;
+	else{	   
+	if(webData[j].location_zip == zipCode){
+		text = text + webData[j].location_address + "</br>";
+	}
+	}
+	}
+	
+ 
+  document.getElementById("demo").innerHTML  = text;
+});
+
+
+}
+</script>
+
+</head>
+
+<body>
+Enter Zip code to find dangerous places: <input type="text" id="zipCode" name="zipCode" placeholder="Enter Zip code to find">
+<button onclick="findCity()">Submit</button>
+
+<p id="demo"></p>
+</body>
+</html>
