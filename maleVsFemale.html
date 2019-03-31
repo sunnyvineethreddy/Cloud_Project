@@ -1,0 +1,83 @@
+<html>
+<head>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+function visualize() {
+var graphicData;
+var male=0,female=0,undefined=0;
+
+
+$.when(
+    $.getJSON("https://data.kcmo.org/resource/nyg5-tzkz.json", function(data) {
+        graphicData = data;
+	
+    })
+).then(function() {
+	//for crime data
+	console.log(graphicData);
+   for(var i=0;i<1000;i++){
+    
+	if(graphicData[i].sex == 'M'){
+		male++;
+	}
+	if(graphicData[i].sex == 'F'){
+		female++;
+	}
+	if(graphicData[i].sex == 'U'){
+		undefined++;
+	} 
+	}
+	
+	console.log(male);
+	console.log(female);
+	console.log(undefined);
+	var malePercent=male/(male+female+undefined);
+	malePercent=malePercent*100;
+	var femalePercent=female/(male+female+undefined);
+	femalePercent=femalePercent*100;
+	var undefinedPercent=undefined/(male+female+undefined);
+	undefinedPercent=undefinedPercent*100;
+	
+	
+	var data=[
+	 {data: [[0,malePercent]], label: "Male"},
+     {data: [[1,femalePercent]], label: "Female"},
+	 {data: [[2,undefinedPercent]],label:"Undefined"}
+	];
+	
+	Flotr.draw(document.getElementById("chart"),data, {
+    title: "Gender involved in crime",
+    pie: {
+        show: true
+    },
+    yaxis: {
+        showLabels: false
+    },
+    xaxis: {
+        showLabels: false
+    },
+    grid: {
+        horizontalLines: false,
+        verticalLines: false
+    }
+});
+ 
+  
+});
+
+
+}
+</script>
+
+</head>
+
+<body>
+<script src="flr.js"></script>
+click button to visualize <button onclick="visualize()">visualize</button>
+
+<p id="demo"></p>
+
+<div id='chart' style="width:600px;height:300px;"></div>
+</body>
+</html>

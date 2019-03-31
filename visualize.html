@@ -1,0 +1,89 @@
+<html>
+<head>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+function visualize() {
+var graphicData;
+var autoTheft=0,burglarRes=0,propertyDamage=0,stealingAuto=0;
+var text="";
+
+$.when(
+    $.getJSON("https://data.kcmo.org/resource/nyg5-tzkz.json", function(data) {
+        graphicData = data;
+	
+    })
+).then(function() {
+	//for crime data
+   for(var i=0;i<1000;i++){
+	if(graphicData[i].description == "Burglary - Residence"){
+		burglarRes++;
+	}
+	if(graphicData[i].description == "Auto Theft"){
+		autoTheft++;
+	}
+	if(graphicData[i].description == "Property Damage"){
+		propertyDamage++;
+	}
+	if(graphicData[i].description == "Stealing Auto Parts/"){
+		stealingAuto++;
+	}
+	
+	}
+	text="Burglary:"+ burglarRes +"</br>";
+	text=text+"auto-theft:"+ autoTheft +"</br>";
+	text=text+"Property-Damage:"+ propertyDamage +"</br>";
+	text=text+"Stealing Auto Parts:"+ stealingAuto +"</br>";
+	
+	var graphData=[[[0,burglarRes],[1,autoTheft],[2,propertyDamage],[3,stealingAuto]]];
+	
+	var names=[
+	[0,"Burglary"],
+	[1,"auto-theft"],
+	[2,"Property-Damage"],
+	[3,"stealingAuto"]
+	];
+ 
+	Flotr.draw(document.getElementById("chart"), graphData, {
+    title: "Cases filed on particular",
+    colors: ["#89AFD2", "#1D1D1D", "#DF021D", "#0E204B"],
+    bars: {
+        show: true,
+        barWidth: 0.5,
+        shadowSize: 0,
+        fillOpacity: 1,
+        lineWidth: 0
+    },
+    yaxis: {
+        min: 0,
+        tickDecimals: 0
+    },
+    xaxis: {
+        ticks: names
+    },
+    grid: {
+        horizontalLines: false,
+        verticalLines: false
+    }
+});
+ 
+ 
+  document.getElementById("demo").innerHTML  = text;
+});
+
+
+}
+</script>
+
+</head>
+
+<body>
+<script src="flr.js"></script>
+click button to visualize <button onclick="visualize()">visualize</button>
+
+<p id="demo"></p>
+
+<div id='chart' style="width:600px;height:300px;"></div>
+</body>
+</html>
